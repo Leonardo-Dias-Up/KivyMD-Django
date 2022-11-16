@@ -10,50 +10,6 @@ from kivy.uix.screenmanager import Screen
 from kivymd.uix.button import MDIconButton
 KV = '''
 
-<SenhaCard>:
-    id: card
-    orientation: 'vertical'
-    size_hint: .7, .7
-    pos_hint: {'center_x': .5, 'center_y': .5}
-    
-    MDBoxLayout:
-        size_hint_y: .2
-        padding: [25, 0, 25, 0]
-        md_bg_color: app.theme_cls.primary_color
-        
-        MDLabel:
-            text: 'Mudar senha'
-            theme_text_color: 'Custom'
-            text_color: 1, 1, 1, 1
-        MDIconButton:
-            theme_text_color: 'Custom'
-            icon: 'close'
-            text_color: 1, 1, 1, 1
-            on_release: root.fechar()
-    
-    MDFloatLayout:
-        MDTextField:
-            pos_hint: {'center_x': .5, 'center_y': .8}
-            size_hint_x: .9
-            hint_text: 'Codigo enviado por email'
-        
-        MDTextField:
-            pos_hint: {'center_x': .5, 'center_y': .6}
-            size_hint_x: .9
-            hint_text: 'Nova senha:'
-        
-        MDTextField:
-            pos_hint: {'center_x': .5, 'center_y': .4}
-            size_hint_x: .9
-            hint_text: 'Confirmar nova senha:'
-        
-        ButtonFocus:
-            pos_hint: {'center_x': .5, 'center_y': .2}
-            size_hint_x: .9
-            text: 'Recadastrar!'
-            focus_color: app.theme_cls.accent_color
-            unfocus_color: app.theme_cls.primary_color
-
 <ClickableTextFieldRound_Password>:
     size_hint_y: None
     height: text_field_password.height
@@ -61,12 +17,9 @@ KV = '''
     MDTextField:
         id: text_field_password
         hint_text: root.hint_text
-        text: root.text
+        text: root.text_field_password
         password: True
         icon_left: "key-variant"
-        on_text_validate:
-            root.inputtextfn()
-            root.text_validate()
 
     MDIconButton:
         icon: "eye-off"
@@ -79,17 +32,14 @@ KV = '''
 
 <ClickableTextFieldRound_Email>:
     size_hint_y: None
-    height: text_field.height
+    height: text_field_email.height
             
     MDTextField:
-        id: text_field
+        id: text_field_email
+        text: root.text_field_email
         hint_text: root.hint_text
         #helper_text: "user@gmail.com"
         icon_left: "email"
-        on_text_validate:
-            root.inputtextfn()
-            root.text_validate()
-
        
 Screen:
     MDBoxLayout:
@@ -136,16 +86,17 @@ Screen:
         unfocus_color: app.theme_cls.primary_color
         on_press: 
             root.new()
-            #root.ids.userinput.dispatch('on_text_validate')
+            on_press : app.get_data()
+
         on_release: root.old()
 '''
 
 class ClickableTextFieldRound_Password(MDRelativeLayout):
-    text = StringProperty()
+    text_field_password = StringProperty()
     hint_text = StringProperty()
-print(ClickableTextFieldRound_Password.text)
+
 class ClickableTextFieldRound_Email(MDRelativeLayout):
-    text = StringProperty()
+    text_field_email = StringProperty()
     hint_text = StringProperty()
 
 class SenhaCard(MDCard):
@@ -160,10 +111,6 @@ class TelaLogin(FloatLayout):
     
     def old(self):
             self.ids['button_one'].background_color = [0, 0, 0, 0] 
-    
-    def get_pass(self):
-        text_field_password = self.navigation_bar.get_screen('text_field_password').ids.text_field_password.text
-        print(text_field_password)
 
 class MyApp(MDApp):
     def build(self):
@@ -180,13 +127,13 @@ class MyApp(MDApp):
         button = MDIconButton(
                     icon="language-python",
                     pos_hint={"center_x": 0.4, "center_y": 0.8},
-                    on_release=self.show_data,
+                    on_release=self.get_data,
                 )
         screen.add_widget(button)
         return screen
     
-    def show_data(self, obj):
-        print(self.navigation_bar.text)
+    def get_data(self):
+        print("The data of text field is :: ",self.root.ids.text_field_password.text)
+        print("The data of text field is :: ",self.root.ids.text_field_email.text)
         
 MyApp().run()
-
