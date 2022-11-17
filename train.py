@@ -133,7 +133,12 @@ class MyApp(MDApp):
         return screen
     
     def get_data(self):
-        print("The data of text field is :: ",self.root.ids.text_field_password.text)
-        print("The data of text field is :: ",self.root.ids.text_field_email.text)
+        try:
+            print(type(self.root.text_field_email.ids))
+        except AttributeError:
+            print(5*'**','Continue Tentando',5*'*')
+        print("The data of text field is :: ",self.root.ids)
+        print("The data of text field is :: ",self.root.ids)
+            
         
 MyApp().run()
