@@ -1,26 +1,47 @@
+''' 
+
+#########################################################
+
+Anotações para identificarmos as classes e os ids
+precisamos colocar o id quando chamarmos as classes:
+
+obs: por enquanto estamos usando StringProperty como ids
+
+    ClickableTextFieldRound_Email:
+        id: text_field_email
+
+    ClickableTextFieldRound_Password:
+        id: text_field_password
+
+#########################################################
+
+Referênciamento de Widget com clickaction
+
+https://kivy.org/doc/stable/guide/lang.html#referencing-widgets
+
+
+'''
+
 from kivymd.app import MDApp
-from kivymd.uix.button import MDIconButton
-from kivymd.uix.screen import MDScreen
 from kivy.lang import Builder
 from kivymd.uix.relativelayout import MDRelativeLayout
-from kivy.properties import StringProperty
-from kivymd.uix.card import MDCard
+from kivy.properties import StringProperty, ObjectProperty
 from kivymd.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen
-from kivymd.uix.button import MDIconButton
+
+
 KV = '''
-
 <ClickableTextFieldRound_Password>:
+    
     size_hint_y: None
-    height: text_field_password.height
-
-    MDTextField:
+    MDTextField:    
         id: text_field_password
         hint_text: root.hint_text
         text: root.text_field_password
         password: True
         icon_left: "key-variant"
-
+        # on_text: root.check_status(button_one)
+        
     MDIconButton:
         icon: "eye-off"
         pos_hint: {"center_y": .5}
@@ -54,7 +75,6 @@ Screen:
                 ]
         TelaLogin:
            
-
 <TelaLogin@FloatLayout>:
     MDIcon:
         icon:"language-python"
@@ -62,20 +82,21 @@ Screen:
         font_size: '75sp'
         
     ClickableTextFieldRound_Email:
+        id: text_field_email
         size_hint_x: None
         width: "300dp"
         hint_text: "Email"
         pos_hint: {"center_x": .5, "center_y": .5}
         
-        
     ClickableTextFieldRound_Password:
+        id: text_field_password
         size_hint_x: None
         width: "300dp"
         hint_text: "Password"
         pos_hint: {"center_x": .5, "center_y": .4}
-        
-        
+    
     Button:
+        name:'button_one'
         id: button_one
         size_hint: None, None
         size: 300, 40
@@ -86,59 +107,53 @@ Screen:
         unfocus_color: app.theme_cls.primary_color
         on_press: 
             root.new()
-            on_press : app.get_data()
-
+            root.get_data()
         on_release: root.old()
 '''
 
-class ClickableTextFieldRound_Password(MDRelativeLayout):
-    text_field_password = StringProperty()
-    hint_text = StringProperty()
-
-class ClickableTextFieldRound_Email(MDRelativeLayout):
-    text_field_email = StringProperty()
-    hint_text = StringProperty()
-
-class SenhaCard(MDCard):
-    ...
-
 class TelaLogin(FloatLayout):
-    def ValidaLogin(self):
-        print('Valida Login')
+    
+    class ClickableTextFieldRound_Email(MDRelativeLayout):
+        text_field_email_obj = ObjectProperty() 
+        text_field_email = StringProperty()
+        hint_text = StringProperty()
+    
+    class ClickableTextFieldRound_Password(MDRelativeLayout):
+        text_field_password_obj = ObjectProperty()        
+        text_field_password = StringProperty()
+        hint_text = StringProperty()
+                
+    text_field_password = ClickableTextFieldRound_Password(MDRelativeLayout)
+    text_field_password = text_field_password.text_field_password
+        
+    def get_data(self):
+        
+        print(type(self.ids['text_field_email']))
+        print(self.ids['text_field_password'])
+        # print('text input text is: {txt}'.format(txt=self.text_field_password))
+    
+    # def check_status(self, btn):
+    #     print('button state is: {state}'.format(state=btn.state))
+    #     print('text input text is: {txt}'.format(txt=self.text_field_password))
     
     def new(self):
             self.ids['button_one'].background_color = [1, 0, 1, 1] 
     
     def old(self):
-            self.ids['button_one'].background_color = [0, 0, 0, 0] 
-
+            self.ids['button_one'].background_color = [0, 0 , 0, 0] 
+    
 class MyApp(MDApp):
+    
     def build(self):
-        screen = Screen()
         
+        screen = Screen()
         self.theme_cls.primary_palette = 'Purple'
         self.theme_cls.accent_palette = 'Gray'
         self.theme_cls.primary_hue = '800'
         self.theme_cls.theme_style = 'Dark'
-        self.navigation_bar = Builder.load_string(KV)
-
-        screen.add_widget(self.navigation_bar)
+        self.login_inicial = Builder.load_string(KV)
+        screen.add_widget(self.login_inicial)
         
-        button = MDIconButton(
-                    icon="language-python",
-                    pos_hint={"center_x": 0.4, "center_y": 0.8},
-                    on_release=self.get_data,
-                )
-        screen.add_widget(button)
         return screen
     
-    def get_data(self):
-        try:
-            print(type(self.root.text_field_email.ids))
-        except AttributeError:
-            print(5*'**','Continue Tentando',5*'*')
-        print("The data of text field is :: ",self.root.ids)
-        print("The data of text field is :: ",self.root.ids)
-            
-        
 MyApp().run()
