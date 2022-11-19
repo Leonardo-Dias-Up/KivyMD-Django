@@ -91,10 +91,8 @@ KV = '''
         unfocus_color: app.theme_cls.primary_color
         on_press: 
             root.btn_after()
-            root.check_status(button_one, text_field_email)
-            root.check_status(button_one, text_field_password)
+            root.check_status(button_one, text_field_email, text_field_password)
         on_release: root.btn_pos()
-        
 Screen:
     MDBoxLayout:
         orientation: 'vertical'
@@ -128,14 +126,11 @@ class TelaLogin(FloatLayout):
         def btn_pos(self):
                 self.ids['button_one'].background_color = [0, 0 , 0, 0] 
             
-        def check_status(self, btn, text):
-            
-            if '{state}'.format(state=btn.state) == 'down':
-                print('UP')
-                       
+        def check_status(self, btn, text_email, text_password):
+                                   
             print('button state is: {state}'.format(state=btn.state))
-            print('text input text is: {txt}'.format(txt=text.text))
-        
+            print('text input email is: {txt}'.format(txt=text_email.text))
+            print('text input password is: {txt}'.format(txt=text_password.text))
 
 class MyApp(MDApp):
     
