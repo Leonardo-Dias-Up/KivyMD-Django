@@ -94,6 +94,7 @@ KV = '''
             root.check_status(button_one, text_field_email)
             root.check_status(button_one, text_field_password)
         on_release: root.btn_pos()
+        
 Screen:
     MDBoxLayout:
         orientation: 'vertical'
